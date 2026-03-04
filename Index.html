@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surpresa Cinematográfica Máxima</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+body{
+  height:100vh;
+  overflow:hidden;
+  background:radial-gradient(circle at center,#1a001f 0%,#0c0014 60%,#040009 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#f3e8ff;
+}
+.section{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+  transition:opacity 1.5s ease;
+}
+.hidden{opacity:0;pointer-events:none;}
+.content{max-width:420px;z-index:2;}
+.text{
+  opacity:0;
+  transform:translateY(25px);
+  transition:all 1.5s ease;
+  margin:18px 0;
+  line-height:1.6;
+}
+.show{opacity:1;transform:translateY(0);}
+.big{
+  font-size:2.8rem;
+  font-weight:600;
+  color:#e9d5ff;
+  text-shadow:0 0 20px rgba(233,213,255,0.8);
+  transition:all 2s ease;
+}
+button{
+  margin-top:25px;
+  padding:12px 34px;
+  border-radius:30px;
+  border:2px solid #c084fc;
+  background:rgba(255,255,255,0.05);
+  color:#fff;
+  cursor:pointer;
+  backdrop-filter:blur(6px);
+  transition:.3s;
+}
+button:active{transform:scale(.95);background:#c084fc;color:#150022;}
+.overlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle,rgba(192,132,252,.2),rgba(0,0,0,.6));
+  opacity:0;
+  transition:opacity 2s ease;
+  pointer-events:none;
+  z-index:1;
+}
+.footer{
+  position:fixed;
+  bottom:15px;
+  width:100%;
+  text-align:center;
+  font-size:.8rem;
+  opacity:0;
+  transition:opacity 2s ease;
+}
+.heart-svg{
+  position:absolute;
+  width:10px;
+  height:10px;
+  fill: #c084fc;
+  opacity:0.6;
+  filter: drop-shadow(0 0 8px #c084fc);
+  pointer-events:none;
+  animation: float linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(110vh) scale(0.8);}
+  50%{transform:translateY(40vh) scale(1);}
+  100%{transform:translateY(-20vh) scale(0.8);}
+}
+</style>
+</head>
+<body>
+
+<section class="section" id="page1">
+  <div class="content">
+    <div id="p1" class="text big">De Martins para Laura</div>
+    <button id="next1" style="display:none;">Continuar</button>
+  </div>
+</section>
+
+<section class="section hidden" id="page2">
+  <div class="content">
+    <div id="t1" class="text">Eu não esperava sentir algo assim.</div>
+    <div id="t2" class="text">Não dessa forma.</div>
+    <button id="next2" style="display:none;">Continuar</button>
+  </div>
+</section>
+
+<section class="section hidden" id="page3">
+  <div class="content">
+    <div id="t3" class="text">Mas às vezes…<br>a vida coloca alguém no nosso caminho.</div>
+    <div id="name" class="text big">Laura</div>
+    <button id="next3" style="display:none;">Continuar</button>
+  </div>
+</section>
+
+<section class="section hidden" id="page4">
+  <div class="content">
+    <div id="finalMain" class="text big show">Desde que você chegou,<br>tudo ficou mais bonito 💜</div>
+    <div class="text show" style="transition-delay:1s;">Você é a parte mais especial da minha vida.</div>
+    <div class="text show" style="transition-delay:2s;">Ter você por perto faz tudo valer a pena.</div>
+  </div>
+</section>
+
+<div class="overlay" id="overlay"></div>
+<div class="footer" id="footer">Pensado com carinho, para você, Laura.</div>
+
+<script>
+const svgNS="http://www.w3.org/2000/svg";
+
+/* Função criar coração SVG */
+function createHeart(x=null,y=null,size=null,duration=null){
+  const heart=document.createElementNS(svgNS,"svg");
+  heart.setAttribute("viewBox","0 0 32 29.6");
+  heart.classList.add("heart-svg");
+  heart.style.left=(x!==null?x:Math.random()*window.innerWidth)+"px";
+  heart.style.top=(y!==null?y:Math.random()*window.innerHeight)+"px";
+  heart.style.width=(size!==null?size:(5+Math.random()*20))+"px";
+  heart.style.height=(size!==null?size:(5+Math.random()*20))+"px";
+  heart.style.animationDuration=(duration!==null?duration:(5+Math.random()*7))+"s";
+
+  const path=document.createElementNS(svgNS,"path");
+  path.setAttribute("d","M23.6,0c-2.7,0-5.1,1.6-6.6,4C15.5,1.6,13.1,0,10.4,0C4.7,0,0,4.7,0,10.4c0,7.5,16,19.2,16,19.2s16-11.7,16-19.2C32,4.7,27.3,0,23.6,0z");
+  heart.appendChild(path);
+  document.body.appendChild(heart);
+}
+
+/* Inicial: corações flutuantes */
+function createHearts(count){for(let i=0;i<count;i++){createHeart();}}
+createHearts(30);
+
+/* Fade-in textos */
+function reveal(id,d){setTimeout(()=>document.getElementById(id).classList.add("show"),d);}
+reveal("p1",1000);
+setTimeout(()=>{document.getElementById("next1").style.display="inline-block";},2500);
+
+/* Navegação páginas */
+document.getElementById("next1").addEventListener("click",()=>{
+  document.getElementById("page1").classList.add("hidden");
+  document.getElementById("page2").classList.remove("hidden");
+  reveal("t1",500);reveal("t2",2000);
+  setTimeout(()=>{document.getElementById("next2").style.display="inline-block";},3500);
+});
+document.getElementById("next2").addEventListener("click",()=>{
+  document.getElementById("page2").classList.add("hidden");
+  document.getElementById("page3").classList.remove("hidden");
+  reveal("t3",500);reveal("name",2000);
+  setTimeout(()=>{document.getElementById("next3").style.display="inline-block";},3500);
+});
+document.getElementById("next3").addEventListener("click",()=>{
+  document.getElementById("page3").classList.add("hidden");
+  document.getElementById("page4").classList.remove("hidden");
+
+  // Overlay e footer
+  setTimeout(()=>{document.getElementById("overlay").style.opacity=1;document.getElementById("footer").style.opacity=1;},500);
+
+  // Partículas formando "Laura"
+  const text = "Laura";
+  const canvasX = window.innerWidth/2 - 100;
+  const canvasY = window.innerHeight/2 - 40;
+  for(let i=0;i<150;i++){
+    const angle = Math.random()*Math.PI*2;
+    const radius = 50+Math.random()*60;
+    const x = canvasX + Math.cos(angle)*radius + i%text.length*20;
+    const y = canvasY + Math.sin(angle)*radius;
+    setTimeout(()=>{createHeart(x,y,8+Math.random()*8,3+Math.random()*2)},i*20);
+  }
+
+  // Chuva final
+  setTimeout(()=>{createHearts(80);},4000);
+});
+</script>
+</body>
+</html>
